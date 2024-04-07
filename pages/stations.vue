@@ -2,8 +2,8 @@
 import { getDistance } from 'geolib';
 const config = useRuntimeConfig();
 const jcdc_key = config.public.JC_DECAUX_API_KEY;
-  let latitude = 43.6027039;
-  let longitude = 1.4543495;
+  let latitude : number = 43.6027039;
+  let longitude : number = 1.4543495;
 
 let items = ref([]);
 
@@ -19,7 +19,7 @@ onMounted(async () => {
   }
 });
 
-async function fetchBikeStations(latitude, longitude) {
+async function fetchBikeStations(latitude : number, longitude: number) {
   const { data } = await useFetch('https://api.jcdecaux.com/vls/v1/stations', {
     query: {
       apiKey: jcdc_key,
@@ -42,7 +42,7 @@ async function fetchBikeStations(latitude, longitude) {
       availableBikes: bikeStation.available_bikes,
       deltaTime: Math.floor((Date.now() - bikeStation.last_update) / 1000 / 60),
       defaultOpen: false, 
-      distance: distance
+      distance : distance
     };
   });
 
