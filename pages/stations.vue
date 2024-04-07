@@ -78,12 +78,12 @@ function handleWaypoint() {
     <template #item="{ item }">
       {{ item.content }}
       <div class="flex flex-row items-center justify-between mt-3 space-x-0">
-      <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center rounded-md">{{ item.availableBikes }}</div>
-      <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center rounded-md">{{ item.availableBikeStands }}</div>
-      <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center rounded-md mr-1">{{ item.distance.toFixed(2) }} m</div>
-      <UButton>
+      <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center rounded-l-md">{{ item.availableBikes }}</div>
+      <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center ">{{ item.availableBikeStands }}</div>
+      <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center mr-1">{{ item.distance.toFixed(2) }} m</div>
+      <button class="flex-1 h-12 bg-primary-500 flex items-center justify-center text-white rounded-r-md">
         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4.47046 17.0591L10.2111 5.57771C10.9482 4.10361 13.0518 4.10362 13.7889 5.57771L19.5295 17.0591C20.3661 18.7322 18.6528 20.5356 16.9391 19.7858L12.4008 17.8004C12.1453 17.6886 11.8547 17.6886 11.5992 17.8004L7.06094 19.7858C5.34719 20.5356 3.6339 18.7322 4.47046 17.0591Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-      </UButton>
+      </button>
       </div>
     </template>
   </UAccordion>
