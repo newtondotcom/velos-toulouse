@@ -1,18 +1,17 @@
 <script setup lang="ts">
+import { getDistance } from 'geolib';
 const config = useRuntimeConfig();
 const jcdc_key = config.public.JC_DECAUX_API_KEY;
+  let latitude = 43.6027039;
+  let longitude = 1.4543495;
 
 let items = ref([]);
 
 onMounted(async () => {
-  let latitude = 43.6027039;
-  let longitude = 1.4543495;
-
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition((position) => {
       latitude = position.coords.latitude;
       longitude = position.coords.longitude;
-
       fetchBikeStations(latitude, longitude);
     });
   } else {
@@ -30,10 +29,10 @@ async function fetchBikeStations(latitude, longitude) {
 
   items.value = data.value.map((bikeStation) => {
     const position = bikeStation.position;
-    const distance = Math.sqrt(
-      Math.pow(position.lat - latitude, 2) +
-      Math.pow(position.lng - longitude, 2)
-    ) * 100;
+    const distance = getDistance(
+      { latitude, longitude },
+      { latitude: position.lat, longitude: position.lng }
+    );
 
     return {
       label: bikeStation.name.split('- ')[1],
@@ -52,6 +51,25 @@ async function fetchBikeStations(latitude, longitude) {
     items.value[0].defaultOpen = true;
   }
 }
+
+function handleWaypoint() {
+  const isMobile = /Android|iOS|iPhone|iPad|iPod|Windows Phone/i.test(
+    navigator.userAgent
+  );
+
+  if (isMobile) {
+    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isiOS) {
+      const appleMapsURL = `https://maps.apple.com/?q=${latitude},${longitude}`;
+      window.location.href = appleMapsURL;
+    } else {
+      const googleMapsURL = `https://www.google.com/maps?q=${latitude},${longitude}`;
+      window.location.href = googleMapsURL;
+    }
+  } else {
+    alert('Navigation is only supported on mobile devices.');
+  }
+}
 </script>
 
 <template>
@@ -59,9 +77,10 @@ async function fetchBikeStations(latitude, longitude) {
     <template #item="{ item }">
       {{ item.content }}
       <p class="italic text-gray-900 dark:text-white text-center">
-        {{ item.availableBikeStands }}
-        {{ item.availableBikes }}
-        {{ item.deltaTime }}
+        {{ item.availableBikeStands }} velos disponibles <br>
+        {{ item.availableBikes }} places disponibles <br>
+        {{ item.deltaTime }} minutes depuis la dernière mise à jour <br>
+        {{ item.distance.toFixed(2) }} mètres de votre position
       </p>
     </template>
   </UAccordion>
