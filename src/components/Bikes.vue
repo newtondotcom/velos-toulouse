@@ -2,6 +2,8 @@
 import { getDistance } from 'geolib';
 import {ref, onMounted} from 'vue';
 import { ofetch } from "ofetch";
+import { Button } from '@/components/ui/button'
+import {Star,StarOff} from 'lucide-vue-next';
 
 const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 let latitude : number = 43.6027039;
@@ -22,6 +24,7 @@ onMounted(async () => {
 });
 
 async function fetchBikeStations(latitude : number, longitude: number) {
+  /*
   const data = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
     query : {
       apiKey: jcdc_key,
@@ -30,6 +33,47 @@ async function fetchBikeStations(latitude : number, longitude: number) {
     credentials : 'include'
   });
   console.log(data[0]);
+  */
+  const data = [{
+  "number": 55,
+  "contractName": "toulouse",
+  "name": "00055 - SAINT-SERNIN - G. ARNOULT",
+  "address": "2 RUE GATIEN ARNOULT",
+  "position": {
+    "latitude": 43.609022,
+    "longitude": 1.441105
+  },
+  "banking": false,
+  "bonus": false,
+  "status": "OPEN",
+  "lastUpdate": "2024-07-15T13:50:21Z",
+  "connected": true,
+  "overflow": false,
+  "shape": null,
+  "totalStands": {
+    "availabilities": {
+      "bikes": 1,
+      "stands": 14,
+      "mechanicalBikes": 1,
+      "electricalBikes": 0,
+      "electricalInternalBatteryBikes": 0,
+      "electricalRemovableBatteryBikes": 0
+    },
+    "capacity": 15
+  },
+  "mainStands": {
+    "availabilities": {
+      "bikes": 1,
+      "stands": 14,
+      "mechanicalBikes": 1,
+      "electricalBikes": 0,
+      "electricalInternalBatteryBikes": 0,
+      "electricalRemovableBatteryBikes": 0
+    },
+    "capacity": 15
+  },
+  "overflowStands": null
+}]
 
   items.value = data.map((bikeStation) => {
     const position = bikeStation.position;
@@ -40,13 +84,10 @@ async function fetchBikeStations(latitude : number, longitude: number) {
 
     return {
       label: bikeStation.name.split('- ')[1],
-      icon: 'i-heroicons-information-circle',
       availableBikeStands: bikeStation.mainStands.availabilities.stands,
       availableBikes: bikeStation.mainStands.availabilities.bikes,
-      deltaTime: Math.floor((Date.now() - bikeStation.last_update) / 1000 / 60),
-      defaultOpen: false, 
+      deltaTime: Math.floor((Date.now() - new Date(bikeStation.lastUpdate)) / 1000 / 60),
       distance : distance,
-      last_update : bikeStation.lastUpdate,
     };
   });
 
@@ -77,16 +118,27 @@ function handleWaypoint() {
 </script>
 
 <template>
-  <div class="px-3 py-4">
-  <div v-for="item in items">
-      <div class="flex flex-row items-center justify-between mt-3 space-x-0">
-      <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center rounded-l-md">{{ item.availableBikes }}</div>
-      <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center ">{{ item.availableBikeStands }}</div>
-      <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center mr-1">{{ item.distance.toFixed(2) }} m</div>
-      <button class="flex-1 h-12 bg-primary-500 flex items-center justify-center text-white rounded-r-md">
-        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4.47046 17.0591L10.2111 5.57771C10.9482 4.10361 13.0518 4.10362 13.7889 5.57771L19.5295 17.0591C20.3661 18.7322 18.6528 20.5356 16.9391 19.7858L12.4008 17.8004C12.1453 17.6886 11.8547 17.6886 11.5992 17.8004L7.06094 19.7858C5.34719 20.5356 3.6339 18.7322 4.47046 17.0591Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-      </button>
+  <div class="px-4 py-4">
+      <div class="flex flex-col items-center space-x-0">
+        <div class="flex flex-col items-center">
+        <div class="text-xl font-bold">🚵 Velos Toulouse</div>
+        <div class="text-sm">une app non-officielle</div>
+        </div>
+      <div v-for="item in items" class="border rounded-xl flex flex-row w-full mt-3">
+        <div class="flex flex-row justify-between">
+          <div class="">{{ item.label }}</div>
+          <div class="">{{  item.deltaTime }}</div>
+        </div>        
+      <div class="flex flex-row justify-between">
+      <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center">{{ item.availableBikes }}</div>
+      <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center">{{ item.availableBikeStands }}</div>
+      <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center">{{ item.distance.toFixed(2) }} m</div>
       </div>
-  </div>
+      <Button class="flex-1 h-12 bg-primary-500 flex items-center justify-center text-white rounded-r-md">
+        <Star color="#ffff00" />
+        <Star color="#ffff00" />
+      </Button>
+      </div>
+    </div>
   </div>
 </template>
