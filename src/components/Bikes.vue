@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getDistance } from 'geolib';
 import {ref, onMounted} from 'vue';
-import ky from 'ky';
+import { ofetch } from "ofetch";
 
 const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 let latitude : number = 43.6027039;
@@ -22,15 +22,16 @@ onMounted(async () => {
 });
 
 async function fetchBikeStations(latitude : number, longitude: number) {
-  const data = await ky.post('https://api.jcdecaux.com/vls/v3/stations', {
-    json: {
+  const data = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
+    query : {
       apiKey: jcdc_key,
       contract: 'Toulouse'
     },
     credentials : 'include'
-  }).json();
+  });
+  console.log(data[0]);
 
-  items.value = data.value.map((bikeStation) => {
+  items.value = data.map((bikeStation) => {
     const position = bikeStation.position;
     const distance = getDistance(
       { latitude, longitude },
@@ -40,12 +41,12 @@ async function fetchBikeStations(latitude : number, longitude: number) {
     return {
       label: bikeStation.name.split('- ')[1],
       icon: 'i-heroicons-information-circle',
-      content: bikeStation,
-      availableBikeStands: bikeStation.overflow_bikes_stands,
-      availableBikes: bikeStation.overflow_bikes,
+      availableBikeStands: bikeStation.mainStands.availabilities.stands,
+      availableBikes: bikeStation.mainStands.availabilities.bikes,
       deltaTime: Math.floor((Date.now() - bikeStation.last_update) / 1000 / 60),
       defaultOpen: false, 
-      distance : distance
+      distance : distance,
+      last_update : bikeStation.lastUpdate,
     };
   });
 
@@ -78,7 +79,6 @@ function handleWaypoint() {
 <template>
   <div class="px-3 py-4">
   <div v-for="item in items">
-      {{ item.content }}
       <div class="flex flex-row items-center justify-between mt-3 space-x-0">
       <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center rounded-l-md">{{ item.availableBikes }}</div>
       <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center ">{{ item.availableBikeStands }}</div>
