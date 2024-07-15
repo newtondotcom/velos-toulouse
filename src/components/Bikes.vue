@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { getDistance } from 'geolib';
 import {ref, onMounted} from 'vue';
+import ky from 'ky';
 
-const jcdc_key = import.meta.env.JC_DECAUX_API_KEY;
-  let latitude : number = 43.6027039;
-  let longitude : number = 1.4543495;
+const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
+let latitude : number = 43.6027039;
+let longitude : number = 1.4543495;
 
 let items = ref([]);
 
@@ -21,26 +22,27 @@ onMounted(async () => {
 });
 
 async function fetchBikeStations(latitude : number, longitude: number) {
-  const { data } = await useFetch('https://api.jcdecaux.com/vls/v1/stations', {
-    query: {
+  const data = await ky.post('https://api.jcdecaux.com/vls/v3/stations', {
+    json: {
       apiKey: jcdc_key,
       contract: 'Toulouse'
-    }
-  });
+    },
+    credentials : 'include'
+  }).json();
 
   items.value = data.value.map((bikeStation) => {
     const position = bikeStation.position;
     const distance = getDistance(
       { latitude, longitude },
-      { latitude: position.lat, longitude: position.lng }
+      { latitude: position.latitude, longitude: position.longitude }
     );
 
     return {
       label: bikeStation.name.split('- ')[1],
       icon: 'i-heroicons-information-circle',
       content: bikeStation,
-      availableBikeStands: bikeStation.available_bike_stands,
-      availableBikes: bikeStation.available_bikes,
+      availableBikeStands: bikeStation.overflow_bikes_stands,
+      availableBikes: bikeStation.overflow_bikes,
       deltaTime: Math.floor((Date.now() - bikeStation.last_update) / 1000 / 60),
       defaultOpen: false, 
       distance : distance
