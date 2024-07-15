@@ -3,11 +3,13 @@
   import { ref, onMounted } from 'vue';
   import { ofetch } from 'ofetch';
   import { Button } from '@/components/ui/button';
-  import { Star, StarOff } from 'lucide-vue-next';
+  import { Star, StarOff, Bike, SquareParking, Rss } from 'lucide-vue-next';
 
   const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
   let latitude: number = 43.6027039;
   let longitude: number = 1.4543495;
+
+  const favorite = ref(true);
 
   let items = ref([]);
 
@@ -121,25 +123,27 @@
   <div class="px-4 py-4">
     <div class="flex flex-col items-center space-x-0">
       <div class="flex flex-col items-center">
-        <div class="text-xl font-bold">🚵 Velos Toulouse</div>
+        <div class="text-2xl font-bold">🚵 Velos Toulouse</div>
         <div class="text-sm">une app non-officielle</div>
       </div>
       <div v-for="item in items" class="border rounded-xl flex flex-row w-full mt-3">
+        <div class="flex flex-col w-full">
         <div class="flex flex-row justify-between">
-          <div class="">{{ item.label }}</div>
-          <div class="">{{ item.deltaTime }}</div>
+          <div class="flex">{{ item.label }}</div>
+          <div class="flex">{{ item.distance.toFixed(2) }} m</div>
         </div>
         <div class="flex flex-row justify-between">
-          <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center">{{ item.availableBikes }}</div>
-          <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center">{{ item.availableBikeStands }}</div>
-          <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center">
-            {{ item.distance.toFixed(2) }} m
-          </div>
+          <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center"><Bike :size="18"/>{{ item.availableBikes }}</div>
+          <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center"><SquareParking :size="18"/>{{ item.availableBikeStands }}</div>
+          <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center"><Rss :size="18"/>{{ item.deltaTime }} min</div>
         </div>
-        <Button class="flex-1 h-12 bg-primary-500 flex items-center justify-center text-white rounded-r-md">
-          <Star color="#ffff00" />
-          <Star color="#ffff00" />
+        </div>
+        <div class="flex flex-col justify-center align-middle w-16 px-2">
+        <Button>
+          <Star color="#ffff00" v-if="favorite" :size="22"/>
+          <StarOff color="#ffff00" v-else :size="22"/>
         </Button>
+      </div>
       </div>
     </div>
   </div>
