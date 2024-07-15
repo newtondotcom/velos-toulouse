@@ -1,14 +1,16 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
+import Station from '@/components/vt/Station.vue';
+
+import type { IStation } from '@/components/lib/types';
+
   import { fetchBikeStations } from '@/lib/fetch';
-  import Station from '@/components/vt/Station.vue';
   import { Squirrel } from 'lucide-vue-next';
 
-  const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
   let latitude: number = 43.6027039;
   let longitude: number = 1.4543495;
 
-  let items = ref([]);
+  let items = ref<IStation[]>([]);
 
   onMounted(async () => {
     if (navigator.geolocation) {
@@ -19,7 +21,6 @@
     }
     items.value = await fetchBikeStations(latitude, longitude);
   });
-
 </script>
 
 <template>

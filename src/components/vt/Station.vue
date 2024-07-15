@@ -1,19 +1,19 @@
 <template>
-<div class="flex flex-col w-full cursor-pointer" @click="handleWaypoint">
+  <div class="flex flex-col w-full cursor-pointer" @click="handleWaypoint">
     <div class="flex flex-row justify-between px-1 pl-2 pt-1">
       <div class="flex font-bold">{{ station.label }}</div>
-      <div class="flex">{{ station.distance }} m</div>
+      <div class="flex font-light">{{ station.distance }} m</div>
     </div>
     <div class="flex flex-row justify-between">
-      <div class="flex-1 h-12 flex items-center justify-center">
+      <div class="flex-1 h-12 flex items-center justify-center font-semibold" :style="{ color: station.colorBikes }">
         <Bike :size="18" />
         {{ station.availableBikes }}
       </div>
-      <div class="flex-1 h-12 flex items-center justify-center">
+      <div class="flex-1 h-12 flex items-center justify-center font-semibold" :style="{ color: station.colorStands }">
         <SquareParking :size="18" />
         {{ station.availableBikeStands }}
       </div>
-      <div class="flex-1 h-12 flex items-center justify-center">
+      <div class="flex-1 h-12 flex items-center justify-center text-orange-500/90">
         <Rss :size="18" />
         {{ station.deltaTime }} min
       </div>
@@ -27,20 +27,22 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-defineProps({
-  station: Object
-})
+import type { IStation } from '@/component/lib/types';
+import { PropType } from 'vue';
+  defineProps({
+    station: Object as PropType<IStation>,
+  });
   import { Button } from '@/components/ui/button';
-  import { Star, StarOff, Bike, SquareParking, Rss} from 'lucide-vue-next';
+  import { Star, StarOff, Bike, SquareParking, Rss } from 'lucide-vue-next';
 
-import { useVibrate } from '@vueuse/core';
-const { vibrate, stop, isSupported } = useVibrate({ pattern: [300, 100, 300] });
+  import { useVibrate } from '@vueuse/core';
+  const { vibrate, stop, isSupported } = useVibrate({ pattern: [300, 100, 300] });
 
-  
   function handleWaypoint() {
-    if (isSupported){vibrate()};
+    if (isSupported) {
+      vibrate();
+    }
     const isMobile = /Android|iOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
 
     if (isMobile) {
