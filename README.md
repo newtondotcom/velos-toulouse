@@ -1,3 +1,3 @@
 # Velos-toulouse
 
-🚵 a small web app to get real time bikes availability based on jcDecaux api 
+🚵 a small web app to get real time bikes availability based on jcDecaux api
