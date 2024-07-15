@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@vueuse/core": "^10.11.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "geolib": "^3.3.4",
@@ -22,6 +23,8 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@iconify-json/radix-icons": "^1.1.14",
+    "@iconify/vue": "^4.1.2",
     "@types/node": "^20.14.10",
     "@vitejs/plugin-vue": "^5.0.5",
     "autoprefixer": "^10.4.19",
