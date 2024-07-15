@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import { ref, onMounted } from 'vue';
-import Station from '@/components/vt/Station.vue';
+  import Station from '@/components/vt/Station.vue';
 
-import type { IStation } from '@/components/lib/types';
+  import type { IStation } from '@/components/lib/types';
 
   import { fetchBikeStations } from '@/lib/fetch';
   import { Squirrel } from 'lucide-vue-next';

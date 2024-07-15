@@ -5,11 +5,17 @@
       <div class="flex font-light">{{ station.distance }} m</div>
     </div>
     <div class="flex flex-row justify-between">
-      <div class="flex-1 h-12 flex items-center justify-center font-semibold" :style="{ color: station.colorBikes }">
+      <div
+        class="flex-1 h-12 flex items-center justify-center font-semibold"
+        :style="{ color: station.colorBikes }"
+      >
         <Bike :size="18" />
         {{ station.availableBikes }}
       </div>
-      <div class="flex-1 h-12 flex items-center justify-center font-semibold" :style="{ color: station.colorStands }">
+      <div
+        class="flex-1 h-12 flex items-center justify-center font-semibold"
+        :style="{ color: station.colorStands }"
+      >
         <SquareParking :size="18" />
         {{ station.availableBikeStands }}
       </div>
@@ -28,8 +34,8 @@
 </template>
 
 <script setup lang="ts">
-import type { IStation } from '@/component/lib/types';
-import { PropType } from 'vue';
+  import type { IStation } from '@/component/lib/types';
+  import { PropType } from 'vue';
   defineProps({
     station: Object as PropType<IStation>,
   });

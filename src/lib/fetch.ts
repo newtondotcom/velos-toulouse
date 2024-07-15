@@ -1,14 +1,14 @@
 import { ofetch } from 'ofetch';
 import { getDistance } from 'geolib';
 import type { IStation } from '@/component/lib/types';
-  
+
 const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 const maxNameLength = 25;
 
-function calculatedColor(percentage : number) {
-    const red = 255 - Math.round((percentage / 100) * 255);
-    const green = Math.round((percentage / 100) * 255);
-    return `rgb(${red}, ${green}, 0)`;
+function calculatedColor(percentage: number) {
+  const red = 255 - Math.round((percentage / 100) * 255);
+  const green = Math.round((percentage / 100) * 255);
+  return `rgb(${red}, ${green}, 0)`;
 }
 
 export async function fetchBikeStations(latitude: number, longitude: number) {
@@ -124,7 +124,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     const percentageAvailableBikes =
       parseFloat(availableBikes) / (parseFloat(availableBikes) + parseFloat(availableBikeStands));
     const percentageAvailableSlots = 100 - parseFloat(percentageAvailableBikes);
-    const colorBikes = calculatedColor (percentageAvailableBikes);
+    const colorBikes = calculatedColor(percentageAvailableBikes);
     const colorStands = calculatedColor(percentageAvailableSlots);
 
     return {
@@ -136,7 +136,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
       favorite: false,
       percentageAvailableBikes,
       colorBikes,
-      colorStands
+      colorStands,
     };
   });
 
