@@ -1,41 +1,90 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { getDistance } from 'geolib';
+import {ref, onMounted} from 'vue';
 
-defineProps<{ msg: string }>()
+const jcdc_key = import.meta.env.JC_DECAUX_API_KEY;
+  let latitude : number = 43.6027039;
+  let longitude : number = 1.4543495;
 
-const count = ref(0)
+let items = ref([]);
+
+onMounted(async () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+      fetchBikeStations(latitude, longitude);
+    });
+  } else {
+    fetchBikeStations(latitude, longitude);
+  }
+});
+
+async function fetchBikeStations(latitude : number, longitude: number) {
+  const { data } = await useFetch('https://api.jcdecaux.com/vls/v1/stations', {
+    query: {
+      apiKey: jcdc_key,
+      contract: 'Toulouse'
+    }
+  });
+
+  items.value = data.value.map((bikeStation) => {
+    const position = bikeStation.position;
+    const distance = getDistance(
+      { latitude, longitude },
+      { latitude: position.lat, longitude: position.lng }
+    );
+
+    return {
+      label: bikeStation.name.split('- ')[1],
+      icon: 'i-heroicons-information-circle',
+      content: bikeStation,
+      availableBikeStands: bikeStation.available_bike_stands,
+      availableBikes: bikeStation.available_bikes,
+      deltaTime: Math.floor((Date.now() - bikeStation.last_update) / 1000 / 60),
+      defaultOpen: false, 
+      distance : distance
+    };
+  });
+
+  items.value.sort((a, b) => a.distance - b.distance);
+  if (items.value.length > 0) {
+    items.value[0].defaultOpen = true;
+  }
+}
+
+function handleWaypoint() {
+  const isMobile = /Android|iOS|iPhone|iPad|iPod|Windows Phone/i.test(
+    navigator.userAgent
+  );
+
+  if (isMobile) {
+    const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isiOS) {
+      const appleMapsURL = `https://maps.apple.com/?q=${latitude},${longitude}`;
+      window.location.href = appleMapsURL;
+    } else {
+      const googleMapsURL = `https://www.google.com/maps?q=${latitude},${longitude}`;
+      window.location.href = googleMapsURL;
+    }
+  } else {
+    alert('Navigation is only supported on mobile devices.');
+  }
+}
 </script>
 
 <template>
-  <h1>{{ msg }}</h1>
-
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
+  <div class="px-3 py-4">
+  <div v-for="item in items">
+      {{ item.content }}
+      <div class="flex flex-row items-center justify-between mt-3 space-x-0">
+      <div class="flex-1 h-12 bg-primary-400 flex items-center justify-center rounded-l-md">{{ item.availableBikes }}</div>
+      <div class="flex-1 h-12 bg-primary-300 flex items-center justify-center ">{{ item.availableBikeStands }}</div>
+      <div class="flex-1 h-12 bg-primary-200 flex items-center justify-center mr-1">{{ item.distance.toFixed(2) }} m</div>
+      <button class="flex-1 h-12 bg-primary-500 flex items-center justify-center text-white rounded-r-md">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4.47046 17.0591L10.2111 5.57771C10.9482 4.10361 13.0518 4.10362 13.7889 5.57771L19.5295 17.0591C20.3661 18.7322 18.6528 20.5356 16.9391 19.7858L12.4008 17.8004C12.1453 17.6886 11.8547 17.6886 11.5992 17.8004L7.06094 19.7858C5.34719 20.5356 3.6339 18.7322 4.47046 17.0591Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+      </button>
+      </div>
   </div>
-
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Learn more about IDE Support for Vue in the
-    <a
-      href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support"
-      target="_blank"
-      >Vue Docs Scaling up Guide</a
-    >.
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  </div>
 </template>
-
-<style scoped>
-.read-the-docs {
-  color: #888;
-}
-</style>
