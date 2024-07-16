@@ -27,8 +27,8 @@
   </div>
   <div class="flex flex-col justify-center align-middle w-16 px-2">
     <Button @click="favoriteButtonPressed(station.number)">
-      <Star color="#ffff00" v-if="station.favorite" :size="22" />
-      <StarOff color="#ffff00" v-else :size="22" />
+      <StarOff color="#ffff00" v-if="station.favorite" :size="22" />
+      <Star color="#ffff00" v-else :size="22" />
     </Button>
   </div>
 </template>

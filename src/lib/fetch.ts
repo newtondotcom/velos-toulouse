@@ -106,7 +106,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     },
   ];
 
-  const favorites : IFavorites[] = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const favorites: IFavorites[] = JSON.parse(localStorage.getItem('favorites') || '[]');
 
   items = data.map((bikeStation) => {
     const position = bikeStation.position;
