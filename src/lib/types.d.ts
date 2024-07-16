@@ -1,4 +1,4 @@
-export interface IStation {
+export interface IStationAPI {
   number: number;
   contractName: string;
   name: string;
@@ -37,4 +37,17 @@ export interface IStation {
     capacity: number;
   };
   overflowStands: any;
+}
+
+export interface IStation {
+  number: number;
+  label: string;
+  availableBikeStands: number;
+  availableBikes: number;
+  deltaTime: number;
+  distance: number;
+  favorite: boolean;
+  percentageAvailableBikes: number;
+  colorBikes: string;
+  colorStands: string;
 }
