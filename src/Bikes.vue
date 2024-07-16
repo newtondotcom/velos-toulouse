@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, computed } from 'vue';
   import Station from '@/components/vt/Station.vue';
 
   import type { IStation } from '@/components/lib/types';
@@ -10,7 +10,32 @@
   let latitude: number = 43.6027039;
   let longitude: number = 1.4543495;
 
-  let items = ref<IStation[]>([]);
+  let stations = ref<IStation[]>([]);
+
+  const favoriteStations = computed(() => {
+    return stations.value.filter((station) => station.favorite);
+  });
+
+  const nonFavoriteStations = computed(() => {
+    return stations.value.filter((station) => !station.favorite);
+  });
+
+  function favoriteButtonPressed(number: number) {
+    // Toggle the favorite property of the specific station
+    stations.value.forEach((station) => {
+      if (station.number === number) {
+        station.favorite = !station.favorite;
+      }
+    });
+
+    // Map the items to get an array of favorite station numbers
+    const favorites = stations.value
+      .filter((station) => station.favorite)
+      .map((station) => station.number);
+
+    // Save the favorites array to localStorage
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
 
   onMounted(async () => {
     if (navigator.geolocation) {
@@ -19,7 +44,7 @@
         longitude = position.coords.longitude;
       });
     }
-    items.value = await fetchBikeStations(latitude, longitude);
+    stations.value = await fetchBikeStations(latitude, longitude);
   });
 </script>
 
@@ -34,13 +59,16 @@
           Appuyez sur une des stations pour ouvrir votre application de navigation
         </div>
       </div>
-      <div class="pt-2">VOS FAVORIS</div>
-      <div v-for="item in items" class="border rounded-xl flex flex-row w-full mt-3">
-        <Station :station="item" />
+      <div class="pt-2 font-semibold text-primary">VOS FAVORIS</div>
+      <div v-for="station in favoriteStations" class="border rounded-xl flex flex-row w-full mt-3">
+        <Station :station="station" :favoriteButtonPressed />
       </div>
-      <div class="pt-2">STATIONS A PROXIMITES</div>
-      <div v-for="item in items" class="border rounded-xl flex flex-row w-full mt-3">
-        <Station :station="item" />
+      <div class="pt-2 font-semibold text-primary">STATIONS A PROXIMITES</div>
+      <div
+        v-for="station in nonFavoriteStations"
+        class="border rounded-xl flex flex-row w-full mt-3"
+      >
+        <Station :station="station" :favoriteButtonPressed />
       </div>
     </div>
   </div>

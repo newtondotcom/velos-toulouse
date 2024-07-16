@@ -1,6 +1,6 @@
 import { ofetch } from 'ofetch';
 import { getDistance } from 'geolib';
-import type { IStation } from '@/component/lib/types';
+import type { IStation, IStationAPI } from '@/component/lib/types';
 
 const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 const maxNameLength = 25;
@@ -14,7 +14,7 @@ function calculatedColor(percentage: number) {
 export async function fetchBikeStations(latitude: number, longitude: number) {
   let items: IStation[] = [];
   /*
-  const data = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
+  const data : IStationAPI[] = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
     query : {
       apiKey: jcdc_key,
       contract: 'Toulouse'
@@ -23,7 +23,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
   });
   console.log(data[0]);
   */
-  const data = [
+  const data: IStationAPI[] = [
     {
       number: 55,
       contractName: 'toulouse',
@@ -65,7 +65,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
       overflowStands: null,
     },
     {
-      number: 55,
+      number: 80,
       contractName: 'toulouse',
       name: '00055 - SAINT-SERNIN - G. ARNOULT',
       address: '2 RUE GATIEN ARNOULT',
@@ -106,6 +106,8 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     },
   ];
 
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
   items = data.map((bikeStation) => {
     const position = bikeStation.position;
     const distance: String = getDistance(
@@ -126,14 +128,17 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     const percentageAvailableSlots = 100 - parseFloat(percentageAvailableBikes);
     const colorBikes = calculatedColor(percentageAvailableBikes);
     const colorStands = calculatedColor(percentageAvailableSlots);
+    const number = bikeStation.number;
+    const favorite = favorites.includes(number);
 
     return {
+      number,
       label,
       availableBikeStands,
       availableBikes,
       deltaTime,
       distance: formattedDistance,
-      favorite: false,
+      favorite,
       percentageAvailableBikes,
       colorBikes,
       colorStands,
