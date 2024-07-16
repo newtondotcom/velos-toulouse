@@ -29,7 +29,7 @@
     });
 
     // Map the items to get an array of favorite station numbers
-    const favorites = stations.value
+    const favorites : IFavorites[] = stations.value
       .filter((station) => station.favorite)
       .map((station) => station.number);
 

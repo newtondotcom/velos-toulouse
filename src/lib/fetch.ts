@@ -1,6 +1,6 @@
 import { ofetch } from 'ofetch';
 import { getDistance } from 'geolib';
-import type { IStation, IStationAPI } from '@/component/lib/types';
+import type { IStation, IStationAPI, IFavorites } from '@/component/lib/types';
 
 const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 const maxNameLength = 25;
@@ -106,7 +106,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     },
   ];
 
-  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  const favorites : IFavorites[] = JSON.parse(localStorage.getItem('favorites') || '[]');
 
   items = data.map((bikeStation) => {
     const position = bikeStation.position;

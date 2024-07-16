@@ -51,3 +51,7 @@ export interface IStation {
   colorBikes: string;
   colorStands: string;
 }
+
+export interface IFavorites {
+  number: number;
+}
