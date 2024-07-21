@@ -62,7 +62,7 @@
   <div class="px-4 py-4 md:px-[30vw]">
     <div class="flex flex-col items-center space-x-0">
       <div class="flex flex-col items-center">
-        <div class="text-2xl font-bold">🚵 Velos Toulouse</div>
+        <div class="text-2xl font-bold">🚵 VélÔToulouse</div>
         <div class="text-sm">une app non-officielle</div>
         <div class="text-xs flex flex-row mt-2">
           <Squirrel class="mr-2" />
