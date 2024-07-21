@@ -1,6 +1,7 @@
 import path from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa'
 
 import tailwind from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
@@ -11,7 +12,16 @@ export default defineConfig({
       plugins: [tailwind(), autoprefixer()],
     },
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    VitePWA({ 
+      registerType: 'autoUpdate', 
+      injectRegister: 'auto',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+      },      
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg']
+    })],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
