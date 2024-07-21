@@ -1,11 +1,12 @@
 <script setup lang="ts">
   import { ref, onMounted, computed } from 'vue';
+  import { Button } from '@/components/ui/button';
   import Station from '@/components/vt/Station.vue';
 
   import type { IStation } from '@/components/lib/types';
 
   import { fetchBikeStations } from '@/lib/fetch';
-  import { Squirrel, BadgeInfo } from 'lucide-vue-next';
+  import { Squirrel, BadgeInfo, RefreshCcw } from 'lucide-vue-next';
 
   let latitude: number = 43.6027039;
   let longitude: number = 1.4543495;
@@ -37,6 +38,10 @@
     localStorage.setItem('favorites', JSON.stringify(favorites));
   }
 
+  async function refresh() {
+    stations.value = await fetchBikeStations(latitude, longitude);
+  }
+
   onMounted(async () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -58,6 +63,11 @@
           <Squirrel class="mr-2" />
           Appuyez sur une des stations pour ouvrir votre application de navigation
         </div>
+      </div>
+      <div class="absolute top-2 right-2">
+        <Button @click="vibrate">
+          <RefreshCcw />
+        </Button>
       </div>
       <div class="pt-2 font-bold text-primary" v-if="favoriteStations.length > 0">VOS FAVORIS</div>
       <div v-for="station in favoriteStations" class="border rounded-xl flex flex-row w-full mt-3">
