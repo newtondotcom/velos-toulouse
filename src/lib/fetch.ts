@@ -13,16 +13,14 @@ function calculatedColor(percentage: number) {
 
 export async function fetchBikeStations(latitude: number, longitude: number) {
   let items: IStation[] = [];
-  /*
-  const data : IStationAPI[] = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
-    query : {
+  const data: IStationAPI[] = await ofetch('https://api.jcdecaux.com/vls/v3/stations', {
+    query: {
       apiKey: jcdc_key,
-      contract: 'Toulouse'
+      contract: 'Toulouse',
     },
-    credentials : 'include'
+    credentials: 'include',
   });
-  console.log(data[0]);
-  */
+  /*
   const data: IStationAPI[] = [
     {
       number: 55,
@@ -105,6 +103,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
       overflowStands: null,
     },
   ];
+  */
 
   const favorites: IFavorites[] = JSON.parse(localStorage.getItem('favorites') || '[]');
 

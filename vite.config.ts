@@ -13,7 +13,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
+    vue({}),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
@@ -21,6 +21,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+      manifest: false,
+      manifestFilename: 'site.webmanifest',
     }),
   ],
   resolve: {
