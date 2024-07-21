@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import Bikes from '@/components/vt/Bikes.vue';
+</script>
 
 <template>
   <div>
-    <RouterView />
+    <Bikes />
   </div>
 </template>
