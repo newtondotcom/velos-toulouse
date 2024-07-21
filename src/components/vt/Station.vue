@@ -47,9 +47,6 @@
   const { vibrate, stop, isSupported } = useVibrate({ pattern: [300, 100, 300] });
 
   function handleWaypoint() {
-    if (isSupported) {
-      vibrate();
-    }
     const isMobile = /Android|iOS|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
 
     if (isMobile) {
@@ -63,6 +60,10 @@
       }
     } else {
       alert('Navigation is only supported on mobile devices.');
+    }
+
+    if (isSupported) {
+      vibrate();
     }
   }
 </script>
