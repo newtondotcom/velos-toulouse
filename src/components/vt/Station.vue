@@ -2,7 +2,7 @@
   <div class="flex flex-col w-full cursor-pointer" @click="handleWaypoint">
     <div class="flex flex-row justify-between px-1 pl-2 pt-1">
       <div class="flex font-bold">{{ station.label }}</div>
-      <div class="flex font-light">{{ station.distance }} m</div>
+      <div class="flex text-neutral-600">{{ station.distance }} m</div>
     </div>
     <div class="flex flex-row justify-between">
       <div
@@ -36,7 +36,7 @@
 <script setup lang="ts">
   import type { IStation } from '@/component/lib/types';
   import { PropType } from 'vue';
-  defineProps({
+  const props = defineProps({
     station: Object as PropType<IStation>,
     favoriteButtonPressed: Function,
   });
@@ -52,10 +52,10 @@
     if (isMobile) {
       const isiOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
       if (isiOS) {
-        const appleMapsURL = `https://maps.apple.com/?q=${latitude},${longitude}`;
+        const appleMapsURL = `https://maps.apple.com/?q=${props.station.position.latitude},${props.station.position.longitude}`;
         window.location.href = appleMapsURL;
       } else {
-        const googleMapsURL = `https://www.google.com/maps?q=${latitude},${longitude}`;
+        const googleMapsURL = `https://www.google.com/maps?q=${props.station.position.latitude},${props.station.position.longitude}`;
         window.location.href = googleMapsURL;
       }
     } else {
