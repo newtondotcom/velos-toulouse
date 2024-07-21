@@ -6,8 +6,8 @@ const jcdc_key = import.meta.env.VITE_JC_DECAUX_API_KEY;
 const maxNameLength = 25;
 
 function calculatedColor(percentage: number) {
-  const red = 255 - Math.round((percentage / 100) * 255);
-  const green = Math.round((percentage / 100) * 255);
+  const red = 255 - Math.round(percentage * 255);
+  const green = Math.round(percentage * 255);
   return `rgb(${red}, ${green}, 0)`;
 }
 
@@ -124,7 +124,9 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
     const deltaTime = Math.floor((Date.now() - new Date(bikeStation.lastUpdate)) / 1000 / 60);
     const percentageAvailableBikes =
       parseFloat(availableBikes) / (parseFloat(availableBikes) + parseFloat(availableBikeStands));
-    const percentageAvailableSlots = 100 - parseFloat(percentageAvailableBikes);
+    const percentageAvailableSlots =
+      parseFloat(availableBikeStands) /
+      (parseFloat(availableBikes) + parseFloat(availableBikeStands));
     const colorBikes = calculatedColor(percentageAvailableBikes);
     const colorStands = calculatedColor(percentageAvailableSlots);
     const number = bikeStation.number;
@@ -141,6 +143,7 @@ export async function fetchBikeStations(latitude: number, longitude: number) {
       percentageAvailableBikes,
       colorBikes,
       colorStands,
+      position,
     };
   });
 
