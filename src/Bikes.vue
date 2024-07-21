@@ -2,6 +2,7 @@
   import { ref, onMounted, computed } from 'vue';
   import { Button } from '@/components/ui/button';
   import Station from '@/components/vt/Station.vue';
+  import SkeletonStation from '@/components/vt/SkeletonStation.vue';
 
   import type { IStation } from '@/components/lib/types';
 
@@ -11,7 +12,8 @@
   let latitude: number = 43.6027039;
   let longitude: number = 1.4543495;
 
-  let stations = ref<IStation[]>([]);
+  const stations = ref<IStation[]>([]);
+  const loading = ref(true);
 
   const favoriteStations = computed(() => {
     return stations.value.filter((station) => station.favorite);
@@ -39,7 +41,9 @@
   }
 
   async function refresh() {
+    loading.value = true;
     stations.value = await fetchBikeStations(latitude, longitude);
+    loading.value = false;
   }
 
   onMounted(async () => {
@@ -50,11 +54,12 @@
       });
     }
     stations.value = await fetchBikeStations(latitude, longitude);
+    loading.value = false;
   });
 </script>
 
 <template>
-  <div class="px-4 py-4">
+  <div class="px-4 py-4 md:px-[30vw]">
     <div class="flex flex-col items-center space-x-0">
       <div class="flex flex-col items-center">
         <div class="text-2xl font-bold">🚵 Velos Toulouse</div>
@@ -74,7 +79,11 @@
         <Station :station="station" :favoriteButtonPressed />
       </div>
       <div class="pt-2 font-bold text-primary">STATIONS A PROXIMITÉ</div>
+      <div v-if="loading" class="flex flex-col">
+        <SkeletonStation v-for="i in 10" />
+      </div>
       <div
+        v-else
         v-for="station in nonFavoriteStations"
         class="border rounded-xl flex flex-row w-full mt-3"
       >
@@ -82,9 +91,9 @@
       </div>
     </div>
   </div>
-  <footer>
-    <div class="h-[20vh] px-4">
-      <div class="text-xs flex flex-row mt-2 mb-6">
+  <footer class="flex flex-col items-center">
+    <div class="h-[20vh] md:g-[30vh] md:mt-10 px-4 md:w-[30vw]">
+      <div class="text-xs flex flex-row mt-2 mb-6 md:hidden">
         <BadgeInfo class="mr-2" />
         Cette application peut être ajoutée à votre écran d'acceuil pour une meilleure expérience.
       </div>
